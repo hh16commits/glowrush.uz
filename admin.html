@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glowrush — Главный админ</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="left">
+      <div class="brand">✨ Glowrush — Admin</div>
+      <nav class="tabs" id="nav-tabs">
+        <button data-tab="dashboard" class="tab active">Главная</button>
+        <button data-tab="orders" class="tab">Заказы</button>
+        <button data-tab="products" class="tab">Продукты</button>
+        <button data-tab="clients" class="tab">Клиенты</button>
+        <button data-tab="stats" class="tab">Статистика</button>
+        <button data-tab="settings" class="tab">Настройки</button>
+      </nav>
+    </div>
+    <div class="right">
+      <a class="btn ghost" href="admin_orders.html">Открыть заказы ↗</a>
+      <button class="btn" id="toggle-theme">Тема</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Главная -->
+    <section class="tab-panel active" id="panel-dashboard">
+      <div class="summary">
+        <div class="kpi"><div class="kpi-label">Всего заказов</div><div class="kpi-value" id="kpi-orders">0</div></div>
+        <div class="kpi"><div class="kpi-label">Доход</div><div class="kpi-value" id="kpi-revenue">0</div></div>
+        <div class="kpi"><div class="kpi-label">Продукты</div><div class="kpi-value" id="kpi-products">0</div></div>
+        <div class="kpi"><div class="kpi-label">Клиенты</div><div class="kpi-value" id="kpi-clients">0</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Последние заказы</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th><th>Дата</th><th>Клиент</th><th>Сумма</th><th>Статус</th>
+                </tr>
+              </thead>
+              <tbody id="dash-last-orders">
+                <tr><td colspan="5" class="muted">Нет данных</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Топ продукты</div>
+          <ul class="list" id="dash-top-products">
+            <li class="muted">Нет данных</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Заказы -->
+    <section class="tab-panel" id="panel-orders">
+      <div class="card">
+        <div class="card-title">Заказы</div>
+        <p class="muted">Управление заказами — в отдельной странице.</p>
+        <div class="actions-row">
+          <a class="btn primary" href="admin_orders.html">Перейти</a>
+          <button class="btn" id="export-orders-json">⬇ JSON</button>
+          <button class="btn" id="export-orders-zip">📦 ZIP</button>
+          <label class="btn file">
+            ⬆ Импорт ZIP
+            <input type="file" id="import-orders-zip" accept="application/zip,.zip">
+          </label>
+          <button class="btn danger" id="clear-orders">🗑 Очистить</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Продукты -->
+    <section class="tab-panel" id="panel-products">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Добавить / Редактировать продукт</div>
+          <form id="product-form">
+            <input type="hidden" id="prod-id">
+            <div class="field"><label>Название</label><input id="prod-title" required></div>
+            <div class="field"><label>Цена (сум)</label><input id="prod-price" type="number" required></div>
+            <div class="field"><label>Описание</label><textarea id="prod-desc" rows="3"></textarea></div>
+            <div class="field">
+              <label>Фото</label>
+              <div class="uploader">
+                <input id="prod-image" type="file" accept="image/*">
+                <div class="preview" id="prod-preview">Нет изображения</div>
+              </div>
+            </div>
+            <div class="actions-row">
+              <button class="btn primary" type="submit">Сохранить</button>
+              <button class="btn ghost" type="reset" id="prod-reset">Очистить</button>
+            </div>
+          </form>
+        </div>
+        <div class="card">
+          <div class="card-title">Каталог</div>
+          <input type="search" id="prod-search" placeholder="Поиск...">
+          <div class="products-grid" id="products-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Клиенты -->
+    <section class="tab-panel" id="panel-clients">
+      <div class="card">
+        <div class="card-title">Клиенты</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Имя</th><th>Телефон</th><th>Адрес</th><th>Заказов</th></tr></thead>
+            <tbody id="clients-body"><tr><td colspan="4" class="muted">Нет данных</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Статистика -->
+    <section class="tab-panel" id="panel-stats">
+      <div class="card">
+        <div class="card-title">Сводка</div>
+        <div class="summary">
+          <div class="kpi"><div class="kpi-label">Доход</div><div class="kpi-value" id="stat-revenue">0</div></div>
+          <div class="kpi"><div class="kpi-label">Отменено</div><div class="kpi-value" id="stat-canceled">0</div></div>
+          <div class="kpi"><div class="kpi-label">Средний чек</div><div class="kpi-value" id="stat-avg">0</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Настройки -->
+    <section class="tab-panel" id="panel-settings">
+      <div class="card">
+        <div class="card-title">Настройки</div>
+        <div class="field inline">
+          <label>Тема</label>
+          <select id="theme-select"><option value="dark">Тёмная</option><option value="light">Светлая</option></select>
+        </div>
+        <div class="actions-row">
+          <button class="btn" id="clear-products">Очистить продукты</button>
+          <button class="btn" id="clear-clients">Очистить клиентов</button>
+          <button class="btn danger" id="clear-all">Сбросить всё</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="admin.js" defer></script>
+</body>
+</html>

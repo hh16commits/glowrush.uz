@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glowrush Admin</title>
+<link rel="stylesheet" href="admin_orders.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="brand">✨ Glowrush Admin</div>
+  <div class="tabs">
+    <button class="tab active" data-tab="orders">Заказы</button>
+    <button class="tab" data-tab="products">Продукты</button>
+  </div>
+  <div class="header-right">
+    <button id="add-order" class="btn primary">＋ Новый заказ</button>
+    <button id="add-product" class="btn primary" style="display:none;">＋ Новый продукт</button>
+    <button id="export-json" class="btn">📄 JSON</button>
+    <button id="export-zip" class="btn">🗜 ZIP</button>
+    <label class="btn file">📂 Импорт<input type="file" id="import-zip" accept=".zip"></label>
+    <button id="clear-all" class="btn danger">🗑 Очистить</button>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- =================== Orders Tab =================== -->
+  <section id="orders-tab" class="tab-content">
+    <section class="summary">
+      <div class="kpi"><div class="kpi-label">Всего заказов</div><div class="kpi-value" id="kpi-total">0</div></div>
+      <div class="kpi"><div class="kpi-label">Общая сумма</div><div class="kpi-value" id="kpi-sum">0 сум</div></div>
+      <div class="kpi"><div class="kpi-label">Выполнено</div><div class="kpi-value" id="kpi-done">0</div></div>
+      <div class="kpi"><div class="kpi-label">Отменено</div><div class="kpi-value" id="kpi-canceled">0</div></div>
+    </section>
+
+    <section class="card">
+      <div class="card-title">Фильтры и действия</div>
+      <div class="actions-row">
+        <input type="text" id="search" placeholder="🔍 Поиск...">
+        <select id="filter-status">
+          <option value="">Все статусы</option>
+          <option value="new">Новые</option>
+          <option value="done">Выполнено</option>
+          <option value="canceled">Отменено</option>
+        </select>
+        <button id="mass-done" class="btn">✔ Все выполнено</button>
+        <button id="mass-cancel" class="btn">✖ Все отменить</button>
+        <button id="mass-print" class="btn">🖨 Печать всех</button>
+      </div>
+    </section>
+
+    <section class="card table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th data-sort="id">ID</th>
+            <th data-sort="date">Дата</th>
+            <th data-sort="name">Клиент</th>
+            <th data-sort="phone">Телефон</th>
+            <th data-sort="address">Адрес</th>
+            <th>Товары</th>
+            <th data-sort="total">Сумма</th>
+            <th data-sort="status">Статус</th>
+            <th>Действия</th>
+          </tr>
+        </thead>
+        <tbody id="orders-body"></tbody>
+      </table>
+      <div id="pagination" class="pagination"></div>
+    </section>
+  </section>
+
+  <!-- =================== Products Tab =================== -->
+  <section id="products-tab" class="tab-content" style="display:none;">
+    <section class="card">
+      <div class="card-title">Список продуктов</div>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Фото</th>
+            <th>Название</th>
+            <th>Цена</th>
+            <th>Описание</th>
+            <th>Действия</th>
+          </tr>
+        </thead>
+        <tbody id="products-body"></tbody>
+      </table>
+    </section>
+  </section>
+
+</main>
+
+<!-- =================== Order Modal =================== -->
+<div id="order-modal" class="modal">
+  <div class="modal-content">
+    <span class="close">×</span>
+    <h2 id="order-modal-title">Новый заказ</h2>
+    <form id="order-form">
+      <input type="hidden" id="order-id">
+      <label>Имя клиента <input id="order-name" required></label>
+      <label>Телефон <input id="order-phone" required></label>
+      <label>Адрес <input id="order-address" required></label>
+      <label>Товары <textarea id="order-items"></textarea></label>
+      <label>Сумма <input id="order-total" type="number" min="0" required></label>
+      <label>Статус
+        <select id="order-status">
+          <option value="new">Новый</option>
+          <option value="done">Выполнено</option>
+          <option value="canceled">Отменено</option>
+        </select>
+      </label>
+      <button type="submit" class="btn primary save">💾 Сохранить</button>
+    </form>
+  </div>
+</div>
+
+<!-- =================== Product Modal =================== -->
+<div id="product-modal" class="modal">
+  <div class="modal-content">
+    <span class="close">×</span>
+    <h2 id="product-modal-title">Новый продукт</h2>
+    <form id="product-form">
+      <input type="hidden" id="product-id">
+      <label>Название <input id="product-name" required></label>
+      <label>Цена <input id="product-price" type="number" min="0" required></label>
+      <label>Описание <textarea id="product-desc"></textarea></label>
+      <label>Фото <input type="file" id="product-photo" accept="image/*"></label>
+      <button type="submit" class="btn primary save">💾 Сохранить</button>
+    </form>
+  </div>
+</div>
+
+<script src="admin_orders.js"></script>
+</body>
+</html>
